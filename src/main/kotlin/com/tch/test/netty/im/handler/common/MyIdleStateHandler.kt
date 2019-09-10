@@ -8,8 +8,8 @@ import io.netty.handler.timeout.IdleStateEvent
 class MyIdleStateHandler: ChannelDuplexHandler() {
 
     override fun userEventTriggered(ctx: ChannelHandlerContext, evt: Any) {
-        println("${ctx.channel().remoteAddress()} userEventTriggered $evt")
         if (evt is IdleStateEvent) {
+            println("${ctx.channel().remoteAddress()} userEventTriggered ${evt.state()}")
             if (evt.state() === IdleState.READER_IDLE) {
                 println("${ctx.channel().remoteAddress()} 很久没有发送过消息啦，服务端即将断开该客户端的连接")
                 ctx.close()

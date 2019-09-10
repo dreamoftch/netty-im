@@ -31,6 +31,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile 'io.netty:netty-all:4.1.37.Final'
     compile 'com.alibaba:fastjson:1.2.38'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

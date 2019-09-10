@@ -39,11 +39,9 @@ class ServerHandler: SimpleChannelInboundHandler<Message>() {
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Message) {
-        val incoming = ctx.channel()
-        val remoteAddress = incoming.remoteAddress().toString()
         val message = JSON.toJSONString(msg)
         println("服务器收到消息:$message")
-        channels.writeAndFlush(Message.build(msg.content, remoteAddress))
+        channels.writeAndFlush(Message.build(msg.content, msg.userId))
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

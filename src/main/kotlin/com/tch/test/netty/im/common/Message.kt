@@ -2,17 +2,15 @@ package com.tch.test.netty.im.common
 
 class Message {
 
-    var type: Int? = null
-
     var content: Any? = null
 
-    var user: String? = null
+    var userId: String? = null
 
     companion object {
 
-        fun build(content: Any?, user: String?): Message {
+        fun build(content: Any?, userId: String?): Message {
             return Message().apply {
-                this.user = user
+                this.userId = userId
                 this.content = content
             }
         }

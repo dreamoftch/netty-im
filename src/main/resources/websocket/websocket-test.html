@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script type="text/javascript">
+
+    var ws = new WebSocket("ws://localhost:18888/ws")
+
+    ws.onmessage = function(e) {
+        var showArea = document.getElementById("responset_msg")
+        var msgObj = JSON.parse(e.data)
+        showArea.value = showArea.value + "\n" + msgObj.userId + "说:" + msgObj.content
+    }
+    ws.onopen = function(e) {
+        var showArea = document.getElementById("responset_msg")
+        showArea.value = "连接建立"
+    }
+    ws.onclose = function(e) {
+        var showArea = document.getElementById("responset_msg")
+        showArea.value = "连接关闭"
+    }
+
+    function ws_send() {
+        if (ws.readyStatus = WebSocket.OPEN) {
+            var inputMsg = document.getElementById("user_input_msg").value
+            var obj = {
+                "userId": getUserId(),
+                "content": inputMsg
+            }
+            var json = JSON.stringify(obj)
+            ws.send(json)
+        }
+    }
+
+    function getUserId() {
+        var userId = document.getElementById("userId").value
+        if (!userId) {
+            userId = "defaultUser"
+        }
+        return userId
+    }
+
+
+</script>
+
+<body>
+
+<textarea id="user_input_msg" style="width: 600px;height: 200px"></textarea>
+<br>
+<input type="text" id="userId">
+<input type="button" value="发送消息" onclick="ws_send()">
+
+<br>
+<br>
+<textarea id="responset_msg" style="width: 600px;height: 400px"></textarea>
+
+</body>
+
+</html>
