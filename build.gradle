@@ -1,0 +1,42 @@
+
+buildscript {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
+}
+
+group 'com.tch.test'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile 'io.netty:netty-all:4.1.37.Final'
+    compile 'com.alibaba:fastjson:1.2.38'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
