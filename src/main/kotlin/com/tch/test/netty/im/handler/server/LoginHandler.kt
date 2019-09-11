@@ -18,7 +18,7 @@ class LoginHandler: SimpleChannelInboundHandler<Message>() {
             ctx.close()
             return
         }
-        logger.error("用户${msg.userId}登录成功")
+        logger.info("用户${msg.userId}登录成功")
         UserChannelService.addChannel(msg.userId, ctx.channel())
         UserChannelService.sendMsgToAllUser(Message.build("用户${msg.userId}登陆", SYSTEM_USER_ID))
         ctx.pipeline().remove(LoginHandler::class.java)

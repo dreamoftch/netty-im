@@ -15,8 +15,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.concurrent.thread
 
-
-class RpcClient {
+class IMClient {
 
     companion object {
 
@@ -28,27 +27,30 @@ class RpcClient {
         fun main(args: Array<String>) {
             try {
                 println("请输入您的大名:")
-                val input = BufferedReader(InputStreamReader(System.`in`))
-                val userId = input.readLine()
-                val f = connect(userId)
-                thread {
-                    channel = f.channel()
-                    while (true) {
-                        println("请输入对方的大名:")
-                        val targetUserId = input.readLine()
-                        println("请输入聊天内容:")
-                        val content = input.readLine()
-                        val msg = Message().apply {
-                            this.userId = userId
-                            this.targetUserId = targetUserId
-                            this.content = content
-                        }
-                        sendMsg(userId, msg)
-                    }
-                }
-                f.channel().closeFuture().sync()
+                val reader = BufferedReader(InputStreamReader(System.`in`))
+                val userId = reader.readLine()
+                channel = connect(userId).channel()
+                readAndSendUserInputBackend(userId, reader)
+                channel?.closeFuture()?.sync()
             } finally {
                 workerGroup.shutdownGracefully()
+            }
+        }
+
+        private fun readAndSendUserInputBackend(userId: String, reader: BufferedReader) {
+            thread {
+                while (true) {
+                    println("请输入对方的大名(直接回车表示群聊):")
+                    val targetUserId = reader.readLine()
+                    println("请输入聊天内容:")
+                    val content = reader.readLine()
+                    val msg = Message().apply {
+                        this.userId = userId
+                        this.targetUserId = targetUserId
+                        this.content = content
+                    }
+                    getChannel(userId).writeAndFlush(msg)
+                }
             }
         }
 
@@ -58,10 +60,6 @@ class RpcClient {
                 return connect(userId).channel()
             }
             return currentChannel
-        }
-
-        private fun sendMsg(userId: String, msg: Message) {
-            getChannel(userId).writeAndFlush(msg)
         }
 
         private fun connect(userId: String): ChannelFuture {

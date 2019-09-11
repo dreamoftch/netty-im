@@ -1,5 +1,6 @@
 package com.tch.test.netty.im.handler.server
 
+import com.google.inject.Inject
 import com.tch.test.netty.im.handler.common.TcpMessageDecoder
 import com.tch.test.netty.im.handler.common.TcpMessageEncoder
 import io.netty.buffer.ByteBuf
@@ -10,14 +11,24 @@ import io.netty.handler.codec.http.HttpObjectAggregator
 import io.netty.handler.codec.http.HttpServerCodec
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
 import io.netty.handler.stream.ChunkedWriteHandler
-import org.slf4j.LoggerFactory
 
 /**
- * 区分WebSocket和非WebSocket
+ * 区分WebSocket和非WebSocket的handler
  */
 class TcpWebSocketHandler: ByteToMessageDecoder() {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
+    @Inject
+    private lateinit var webSocketDecoder: WebSocketDecoder
+    @Inject
+    private lateinit var webSocketEncoder: WebSocketEncoder
+    @Inject
+    private lateinit var tcpMessageDecoder: TcpMessageDecoder
+    @Inject
+    private lateinit var tcpMessageEncoder: TcpMessageEncoder
+    @Inject
+    private lateinit var loginHandler: LoginHandler
+    @Inject
+    private lateinit var serverHandler: ServerHandler
 
     companion object {
         private val HTTP_METHOD_PREFIX = listOf(
@@ -39,13 +50,15 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
         }
         val pipeline = ctx.channel().pipeline()
         if (isHttp(byteBuf)) {
+            // 添加WebSocket的handler
             addWebSocketHandler(pipeline)
         } else {
+            // 添加非WebSocket的handler
             addTcpHandler(pipeline)
         }
         // 处理消息
-        pipeline.addLast(LoginHandler()) // 需要登录
-            .addLast(ServerHandler()) // 业务处理
+        pipeline.addLast(loginHandler) // 需要登录
+            .addLast(serverHandler) // 业务处理
         // 每个连接只需要第一次连接上来的时候执行TcpWebSocketHandler,后面都不需要执行,所以需要移除掉
         pipeline.remove(TcpWebSocketHandler::class.java)
     }
@@ -63,8 +76,8 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
     }
 
     private fun addTcpHandler(pipeline: ChannelPipeline) {
-        pipeline.addLast(TcpMessageDecoder()) // 消息解码
-            .addLast(TcpMessageEncoder()) // 消息编码
+        pipeline.addLast(tcpMessageDecoder) // 消息解码
+            .addLast(tcpMessageEncoder) // 消息编码
     }
 
     private fun addWebSocketHandler(pipeline: ChannelPipeline) {
@@ -72,8 +85,8 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
             .addLast(HttpObjectAggregator(10240))
             .addLast(ChunkedWriteHandler())
             .addLast(WebSocketServerProtocolHandler("/ws"))
-            .addLast(WebSocketDecoder()) // 将WebSocket消息转为自定义消息
-            .addLast(WebSocketEncoder()) // 将自定义消息消息转为WebSocket消息
+            .addLast(webSocketDecoder) // 将WebSocket消息转为自定义消息
+            .addLast(webSocketEncoder) // 将自定义消息消息转为WebSocket消息
     }
 
 }
