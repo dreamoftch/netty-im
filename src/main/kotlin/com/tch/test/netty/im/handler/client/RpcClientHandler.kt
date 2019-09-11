@@ -1,6 +1,7 @@
 package com.tch.test.netty.im.handler.client
 
 import com.tch.test.netty.im.common.Message
+import com.tch.test.netty.im.common.SYSTEM_USER_ID
 import com.tch.test.netty.im.common.TOKEN
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -11,7 +12,15 @@ class RpcClientHandler(private val userId: String): SimpleChannelInboundHandler<
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Message) {
-        logger.info("${msg.userId}说: ${msg.content}")
+        logger.info("${getUserId(msg)}说: ${msg.content}")
+    }
+
+    private fun getUserId(msg: Message): String {
+        return if (msg.userId == SYSTEM_USER_ID) {
+            "系统"
+        } else {
+            msg.userId
+        }
     }
 
     override fun channelActive(ctx: ChannelHandlerContext) {

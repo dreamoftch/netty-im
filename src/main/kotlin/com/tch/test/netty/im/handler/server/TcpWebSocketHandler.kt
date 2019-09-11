@@ -45,7 +45,7 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
         }
         // 处理消息
         pipeline.addLast(LoginHandler()) // 需要登录
-            .addLast(ServerHandler())
+            .addLast(ServerHandler()) // 业务处理
         // 每个连接只需要第一次连接上来的时候执行TcpWebSocketHandler,后面都不需要执行,所以需要移除掉
         pipeline.remove(TcpWebSocketHandler::class.java)
     }

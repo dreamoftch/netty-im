@@ -5,62 +5,7 @@
     <title>Title</title>
 </head>
 
-<script type="text/javascript">
-
-    var ws = new WebSocket("ws://localhost:18888/ws")
-
-    ws.onmessage = function(e) {
-        var showArea = document.getElementById("responset_msg")
-        var msgObj = JSON.parse(e.data)
-        showArea.value = showArea.value + "\n" + msgObj.userId + "说:" + msgObj.content
-    }
-    ws.onopen = function(e) {
-        var showArea = document.getElementById("responset_msg")
-        showArea.value = "连接建立"
-    }
-    ws.onclose = function(e) {
-        var showArea = document.getElementById("responset_msg")
-        showArea.value = "连接关闭"
-    }
-
-    function ws_send() {
-        if (ws.readyStatus = WebSocket.OPEN) {
-            var inputMsg = document.getElementById("user_input_msg").value
-            doSendMsg(inputMsg)
-        } else {
-            alert("连接已断开！");
-        }
-    }
-
-    function doSendMsg(content) {
-        var obj = {
-            "userId": getUserId(),
-            "content": content
-        }
-        var json = JSON.stringify(obj)
-        ws.send(json)
-    }
-
-    function login(content) {
-        var obj = {
-            "userId": getUserId(),
-            "token": "a745a0c2-309c-4b08-8ac3-fc91d49179c3"
-        }
-        var json = JSON.stringify(obj)
-        ws.send(json)
-        var showArea = document.getElementById("responset_msg")
-        showArea.value = "登陆成功，开始发消息吧"
-    }
-
-    function getUserId() {
-        var userId = document.getElementById("userId").value
-        if (!userId) {
-            userId = "defaultUser"
-        }
-        return userId
-    }
-
-</script>
+<script type="text/javascript" src="websocket.js"></script>
 
 <body>
 
@@ -73,6 +18,13 @@
 <textarea id="user_input_msg" style="width: 600px;height: 200px"></textarea>
 <br>
 
+消息类型:
+<select id = "messageType" onchange="switchMessageType()">
+    <option value="open" selected>公开消息</option>
+    <option value="private">私聊消息</option>
+</select>
+<span id = "userList"></span>
+<br>
 <input type="button" value="发送消息" onclick="ws_send()">
 
 <br>
