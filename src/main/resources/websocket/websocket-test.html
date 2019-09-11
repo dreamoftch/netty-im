@@ -26,13 +26,30 @@
     function ws_send() {
         if (ws.readyStatus = WebSocket.OPEN) {
             var inputMsg = document.getElementById("user_input_msg").value
-            var obj = {
-                "userId": getUserId(),
-                "content": inputMsg
-            }
-            var json = JSON.stringify(obj)
-            ws.send(json)
+            doSendMsg(inputMsg)
+        } else {
+            alert("连接已断开！");
         }
+    }
+
+    function doSendMsg(content) {
+        var obj = {
+            "userId": getUserId(),
+            "content": content
+        }
+        var json = JSON.stringify(obj)
+        ws.send(json)
+    }
+
+    function login(content) {
+        var obj = {
+            "userId": getUserId(),
+            "token": "a745a0c2-309c-4b08-8ac3-fc91d49179c3"
+        }
+        var json = JSON.stringify(obj)
+        ws.send(json)
+        var showArea = document.getElementById("responset_msg")
+        showArea.value = "登陆成功，开始发消息吧"
     }
 
     function getUserId() {
@@ -43,14 +60,19 @@
         return userId
     }
 
-
 </script>
 
 <body>
 
+<input type="text" id="userId">
+<br>
+<input type="button" value="登陆" onclick="login()">
+
+<br>
+<br>
 <textarea id="user_input_msg" style="width: 600px;height: 200px"></textarea>
 <br>
-<input type="text" id="userId">
+
 <input type="button" value="发送消息" onclick="ws_send()">
 
 <br>

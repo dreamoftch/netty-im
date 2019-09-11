@@ -22,14 +22,14 @@ class RpcClient {
 
         private lateinit var workerGroup: NioEventLoopGroup
 
-        private fun connect(): ChannelFuture {
+        private fun connect(userId: String): ChannelFuture {
             workerGroup = NioEventLoopGroup()
             return Bootstrap()
                 .group(workerGroup)
                 .handler(LoggingHandler(LogLevel.INFO))
                 .channel(NioSocketChannel::class.java)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(ClientChannelInitializer())
+                .handler(ClientChannelInitializer(userId))
                 .connect("localhost", SERVER_PORT)
                 .sync()
         }
@@ -37,19 +37,20 @@ class RpcClient {
         @JvmStatic
         fun main(args: Array<String>) {
             try {
-                val f = connect()
+                val userId = UUID.randomUUID().toString()
+                val f = connect(userId)
                 thread {
                     var channel = f.channel()
                     val input = BufferedReader(InputStreamReader(System.`in`))
                     while (true) {
                         val content = input.readLine()
                         val msg = Message().apply {
-                            this.userId = UUID.randomUUID().toString()
+                            this.userId = userId
                             this.content = content
                         }
                         if (!channel.isActive || !channel.isOpen) {
                             // reconnect
-                            channel = connect().channel()
+                            channel = connect(userId).channel()
                         }
                         channel.writeAndFlush(msg)
                     }

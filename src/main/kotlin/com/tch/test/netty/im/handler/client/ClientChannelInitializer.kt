@@ -5,13 +5,13 @@ import com.tch.test.netty.im.handler.common.TcpMessageEncoder
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 
-class ClientChannelInitializer: ChannelInitializer<SocketChannel>() {
+class ClientChannelInitializer(private val userId: String): ChannelInitializer<SocketChannel>() {
 
     override fun initChannel(ch: SocketChannel) {
         ch.pipeline()
             .addLast(TcpMessageDecoder())
             .addLast(TcpMessageEncoder())
-            .addLast(RpcClientHandler())
+            .addLast(RpcClientHandler(userId))
     }
 
 }
