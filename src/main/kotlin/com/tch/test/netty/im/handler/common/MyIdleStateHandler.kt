@@ -1,11 +1,13 @@
 package com.tch.test.netty.im.handler.common
 
 import io.netty.channel.ChannelDuplexHandler
+import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.timeout.IdleState
 import io.netty.handler.timeout.IdleStateEvent
 import org.slf4j.LoggerFactory
 
+@ChannelHandler.Sharable
 class MyIdleStateHandler: ChannelDuplexHandler() {
 
     private val logger = LoggerFactory.getLogger(javaClass)

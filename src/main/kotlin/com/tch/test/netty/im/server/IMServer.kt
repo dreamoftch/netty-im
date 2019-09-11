@@ -12,7 +12,7 @@ import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 import org.slf4j.LoggerFactory
 
-fun main() {
+fun main(args: Array<String>) {
     Guice.createInjector().getInstance(IMServer::class.java).start()
 }
 
