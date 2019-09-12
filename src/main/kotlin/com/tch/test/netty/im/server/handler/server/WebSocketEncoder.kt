@@ -1,7 +1,7 @@
-package com.tch.test.netty.im.handler.server
+package com.tch.test.netty.im.server.handler.server
 
 import com.alibaba.fastjson.JSON
-import com.tch.test.netty.im.common.Message
+import com.tch.test.netty.im.server.common.Message
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame

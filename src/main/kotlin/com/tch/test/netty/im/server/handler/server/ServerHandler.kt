@@ -1,8 +1,10 @@
-package com.tch.test.netty.im.handler.server
+package com.tch.test.netty.im.server.handler.server
 
 import com.alibaba.fastjson.JSON
-import com.tch.test.netty.im.common.Message
-import com.tch.test.netty.im.service.UserChannelService
+import com.google.inject.Inject
+import com.tch.test.netty.im.server.common.Message
+import com.tch.test.netty.im.server.service.ChatMessageService
+import com.tch.test.netty.im.server.service.UserChannelService
 import io.netty.channel.Channel
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -11,6 +13,9 @@ import org.slf4j.LoggerFactory
 class ServerHandler: SimpleChannelInboundHandler<Message>() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    @Inject
+    private lateinit var chatMessageService: ChatMessageService
 
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         val remoteAddress = ctx.channel().remoteAddress().toString()
@@ -42,6 +47,7 @@ class ServerHandler: SimpleChannelInboundHandler<Message>() {
         } else {
             UserChannelService.sendMsgToUser(msg.targetUserId, msg)
         }
+        chatMessageService.saveChatMessage(msg)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

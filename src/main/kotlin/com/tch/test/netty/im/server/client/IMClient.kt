@@ -1,8 +1,8 @@
-package com.tch.test.netty.im.client
+package com.tch.test.netty.im.server.client
 
-import com.tch.test.netty.im.common.Message
-import com.tch.test.netty.im.common.SERVER_PORT
-import com.tch.test.netty.im.handler.client.ClientChannelInitializer
+import com.tch.test.netty.im.server.common.Message
+import com.tch.test.netty.im.server.common.SERVER_PORT
+import com.tch.test.netty.im.server.handler.client.ClientChannelInitializer
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelFuture
@@ -29,7 +29,9 @@ class IMClient {
                 println("请输入您的大名:")
                 val reader = BufferedReader(InputStreamReader(System.`in`))
                 val userId = reader.readLine()
-                channel = connect(userId).channel()
+                channel = connect(
+                    userId
+                ).channel()
                 readAndSendUserInputBackend(userId, reader)
                 channel?.closeFuture()?.sync()
             } finally {
@@ -45,9 +47,9 @@ class IMClient {
                     println("请输入聊天内容:")
                     val content = reader.readLine()
                     val msg = Message().apply {
-                        this.userId = userId
+                        this.sourceUserId = userId
                         this.targetUserId = targetUserId
-                        this.content = content
+                        this.messageContent = content
                     }
                     getChannel(userId).writeAndFlush(msg)
                 }

@@ -1,7 +1,7 @@
-package com.tch.test.netty.im.handler.client
+package com.tch.test.netty.im.server.handler.client
 
-import com.tch.test.netty.im.handler.common.TcpMessageDecoder
-import com.tch.test.netty.im.handler.common.TcpMessageEncoder
+import com.tch.test.netty.im.server.handler.common.TcpMessageDecoder
+import com.tch.test.netty.im.server.handler.common.TcpMessageEncoder
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 

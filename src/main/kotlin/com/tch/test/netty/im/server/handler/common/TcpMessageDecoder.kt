@@ -1,7 +1,7 @@
-package com.tch.test.netty.im.handler.common
+package com.tch.test.netty.im.server.handler.common
 
 import com.alibaba.fastjson.JSON
-import com.tch.test.netty.im.common.Message
+import com.tch.test.netty.im.server.common.Message
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder

@@ -1,4 +1,4 @@
-package com.tch.test.netty.im.common
+package com.tch.test.netty.im.server.common
 
 const val SERVER_PORT = 18888
 const val SYSTEM_USER_ID = "0"

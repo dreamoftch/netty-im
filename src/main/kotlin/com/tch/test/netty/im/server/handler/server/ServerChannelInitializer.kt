@@ -1,8 +1,8 @@
-package com.tch.test.netty.im.handler.server
+package com.tch.test.netty.im.server.handler.server
 
 import com.google.inject.Inject
 import com.google.inject.Injector
-import com.tch.test.netty.im.handler.common.MyIdleStateHandler
+import com.tch.test.netty.im.server.handler.common.MyIdleStateHandler
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 import io.netty.handler.timeout.IdleStateHandler

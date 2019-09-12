@@ -1,4 +1,4 @@
-package com.tch.test.netty.im.handler.common
+package com.tch.test.netty.im.server.handler.common
 
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandler

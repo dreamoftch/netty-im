@@ -1,8 +1,8 @@
-package com.tch.test.netty.im.handler.server
+package com.tch.test.netty.im.server.handler.server
 
 import com.google.inject.Inject
-import com.tch.test.netty.im.handler.common.TcpMessageDecoder
-import com.tch.test.netty.im.handler.common.TcpMessageEncoder
+import com.tch.test.netty.im.server.handler.common.TcpMessageDecoder
+import com.tch.test.netty.im.server.handler.common.TcpMessageEncoder
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPipeline
@@ -29,6 +29,8 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
     private lateinit var loginHandler: LoginHandler
     @Inject
     private lateinit var serverHandler: ServerHandler
+    @Inject
+    private lateinit var ackHandler: AckHandler
 
     companion object {
         private val HTTP_METHOD_PREFIX = listOf(
@@ -58,6 +60,7 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
         }
         // 处理消息
         pipeline.addLast(loginHandler) // 需要登录
+            .addLast(ackHandler)
             .addLast(serverHandler) // 业务处理
         // 每个连接只需要第一次连接上来的时候执行TcpWebSocketHandler,后面都不需要执行,所以需要移除掉
         pipeline.remove(TcpWebSocketHandler::class.java)

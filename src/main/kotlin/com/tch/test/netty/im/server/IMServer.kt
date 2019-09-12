@@ -1,9 +1,13 @@
 package com.tch.test.netty.im.server
 
+import com.alibaba.fastjson.JSON
 import com.google.inject.Guice
 import com.google.inject.Inject
-import com.tch.test.netty.im.common.SERVER_PORT
-import com.tch.test.netty.im.handler.server.ServerChannelInitializer
+import com.tch.test.netty.im.server.common.Message
+import com.tch.test.netty.im.server.common.SERVER_PORT
+import com.tch.test.netty.im.server.handler.server.ServerChannelInitializer
+import com.tch.test.netty.im.server.module.Modules
+import com.tch.test.netty.im.server.service.ChatMessageService
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
@@ -13,7 +17,14 @@ import io.netty.handler.logging.LoggingHandler
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) {
-    Guice.createInjector().getInstance(IMServer::class.java).start()
+    Guice.createInjector(Modules()).getInstance(IMServer::class.java).start()
+//    val message = Message().apply {
+//        this.userId = "张三"
+//        this.targetUserId = "李四"
+//        this.content = "李四, 你好啊，我是张三"
+//    }
+//    val chatMessage = Guice.createInjector(Modules()).getInstance(ChatMessageService::class.java).saveChatMessage(message)
+//    println(JSON.toJSONString(chatMessage))
 }
 
 class IMServer {
