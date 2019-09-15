@@ -1,13 +1,10 @@
 package com.tch.test.netty.im.server
 
-import com.alibaba.fastjson.JSON
 import com.google.inject.Guice
 import com.google.inject.Inject
-import com.tch.test.netty.im.server.common.Message
 import com.tch.test.netty.im.server.common.SERVER_PORT
 import com.tch.test.netty.im.server.handler.server.ServerChannelInitializer
 import com.tch.test.netty.im.server.module.Modules
-import com.tch.test.netty.im.server.service.ChatMessageService
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup

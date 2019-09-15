@@ -72,9 +72,10 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
     private fun isHttp(byteBuf: ByteBuf): Boolean {
         // getChar(index)相对于readChar()的主要不同在于:
         // getChar不会修改ByteBuf的readerIndex和writerIndex
-        val char1 = byteBuf.getByte(0).toChar().toString()
-        val char2 = byteBuf.getByte(1).toChar().toString()
-        val char3 = byteBuf.getByte(2).toChar().toString()
+        val readerIndex = byteBuf.readerIndex()
+        val char1 = byteBuf.getByte(readerIndex).toChar().toString()
+        val char2 = byteBuf.getByte(readerIndex + 1).toChar().toString()
+        val char3 = byteBuf.getByte(readerIndex + 2).toChar().toString()
         return (char1 + char2 + char3) in HTTP_METHOD_PREFIX
     }
 
