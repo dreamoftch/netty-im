@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.71'
 }
 
-group 'com.tch.test'
+group 'com.llb.test.im'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
