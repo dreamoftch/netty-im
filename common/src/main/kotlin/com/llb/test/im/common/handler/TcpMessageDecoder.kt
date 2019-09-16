@@ -1,7 +1,7 @@
 package com.llb.test.im.common.handler
 
 import com.alibaba.fastjson.JSON
-import com.llb.test.im.common.constant.Message
+import com.llb.test.im.common.msg.IMMessage
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder
@@ -23,12 +23,12 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder
  */
 class TcpMessageDecoder: LengthFieldBasedFrameDecoder(Int.MAX_VALUE, 0, 4, 0, 4) {
 
-    override fun decode(ctx: ChannelHandlerContext, `in`: ByteBuf): Message {
-        val msg = super.decode(ctx, `in`) as ByteBuf
-        val bytes = ByteArray(msg.readableBytes())
-        msg.readBytes(bytes)
+    override fun decode(ctx: ChannelHandlerContext, `in`: ByteBuf): IMMessage? {
+        val frame = super.decode(ctx, `in`) as ByteBuf? ?: return null
+        val bytes = ByteArray(frame.readableBytes())
+        frame.readBytes(bytes)
         val string = String(bytes)
-        return JSON.parseObject(string, Message::class.java)
+        return JSON.parseObject(string, IMMessage::class.java)
     }
 
 }

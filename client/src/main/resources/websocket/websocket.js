@@ -6,8 +6,10 @@ ws.onmessage = function(e) {
     var userId = msgObj.sourceUserId
     if (userId == "0") {
         userId = "系统"
+    } else if (userId == getUserId()) {
+        userId = "我"
     }
-    showArea.value = showArea.value + "\n" + userId + "说:" + msgObj.messageContent
+    showArea.value = showArea.value + "<br/>" + userId + "说:" + msgObj.messageContent
     // 给服务器发送ack
     sendAck(msgObj)
 }

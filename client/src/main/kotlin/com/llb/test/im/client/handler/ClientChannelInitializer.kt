@@ -11,6 +11,7 @@ class ClientChannelInitializer(private val userId: String): ChannelInitializer<S
         ch.pipeline()
             .addLast(TcpMessageDecoder())
             .addLast(TcpMessageEncoder())
+            .addLast(AckHandler())
             .addLast(RpcClientHandler(userId))
     }
 

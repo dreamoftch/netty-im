@@ -1,26 +1,27 @@
 package com.llb.test.im.server.extension
 
-import com.llb.test.im.common.constant.Message
-import com.llb.test.im.server.po.ChatMessage
+import com.llb.test.im.common.msg.IMMessage
+import com.llb.test.im.server.po.MessagePO
 import java.util.*
 
-fun Message.toChatMessage(): ChatMessage {
+fun IMMessage.toPO(): MessagePO {
     val message = this
-    return ChatMessage().apply {
+    return MessagePO().apply {
         this.sourceUserId = message.sourceUserId
-        this.targetUserId = message.targetUserId
-        this.messageContent = message.messageContent
+        this.targetUserId = message.targetUserId.firstOrNull()
+        this.content = message.body
+        this.requestId = message.requestId
         this.createdAt = message.createdAt
     }
 }
 
-fun ChatMessage.toMessage(): Message {
-    val chatMessage = this
-    return Message().apply {
-        this.id = chatMessage.id
-        this.sourceUserId = chatMessage.sourceUserId ?: ""
-        this.targetUserId = chatMessage.targetUserId ?: ""
-        this.messageContent = chatMessage.messageContent
-        this.createdAt = chatMessage.createdAt ?: Date()
+fun MessagePO.toMessage(): IMMessage {
+    val messagePO = this
+    return IMMessage().apply {
+        this.sourceUserId = messagePO.sourceUserId ?: ""
+        this.targetUserId = listOfNotNull(messagePO.targetUserId)
+        this.body = messagePO.content
+        this.requestId = messagePO.requestId
+        this.createdAt = messagePO.createdAt ?: Date()
     }
 }
