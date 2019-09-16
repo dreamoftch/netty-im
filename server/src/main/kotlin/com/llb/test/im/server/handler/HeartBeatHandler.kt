@@ -7,6 +7,9 @@ import com.llb.test.im.server.service.UserChannelService
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 
+/**
+ * 客户端发送给服务器的心跳包处理，只需要返回ack即可
+ */
 class HeartBeatHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     @Inject

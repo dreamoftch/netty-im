@@ -14,9 +14,8 @@ class UserTokenService {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun checkUserToken(msg: IMMessage): Boolean {
-        // TODO
         val body = msg.body ?: return false
-        if (msg.messageType != MessageType.LOGIN || msg.sourceUserId.isNotBlank()) {
+        if (msg.messageType != MessageType.LOGIN || msg.sourceUserId.isBlank()) {
             return false
         }
         return try {

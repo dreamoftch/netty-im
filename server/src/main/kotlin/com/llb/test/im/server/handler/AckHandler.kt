@@ -8,6 +8,9 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import org.slf4j.LoggerFactory
 
+/**
+ * 客户端发送给服务器的ack处理,表示客户端已经成功的接收到该消息了
+ */
 class AckHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     private val logger = LoggerFactory.getLogger(javaClass)

@@ -64,12 +64,18 @@ class IMClient {
             while (true) {
                 logger.info("请输入对方的大名(直接回车表示群聊):")
                 val targetUserId = reader.readLine()
+                val targetUserIds = if (targetUserId.isNullOrBlank()) {
+                    emptyList()
+                } else {
+                    listOf(targetUserId)
+                }
                 logger.info("请输入聊天内容:")
                 val content = reader.readLine()
                 val msg = IMMessage().apply {
                     this.messageType = MessageType.CHAT
                     this.sourceUserId = userId
-                    this.targetUserId = listOf(targetUserId)
+                    this.targetUserId = targetUserIds
+                    this.requestId = UUID.randomUUID().toString()
                     this.body = content
                 }
                 getChannel(userId).writeAndFlush(msg)

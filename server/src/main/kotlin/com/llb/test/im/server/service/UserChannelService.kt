@@ -47,7 +47,8 @@ class UserChannelService {
     /**
      * 给指定用户发送ack消息,表示收到了客户端的消息
      */
-    fun sendAckToUser(channel: Channel, requestId: String) {
+    fun sendAckToUser(channel: Channel, requestId: String?) {
+        requestId ?: throw IllegalArgumentException("requestId can not be null")
         val ackMessage = IMMessage().apply {
             this.messageType = MessageType.ACK
             this.requestId = requestId

@@ -3,13 +3,16 @@ var ws = new WebSocket("ws://localhost:18888/ws")
 ws.onmessage = function(e) {
     var showArea = document.getElementById("responset_msg")
     var msgObj = JSON.parse(e.data)
+    if (msgObj.messageType != 'CHAT') {
+        return
+    }
     var userId = msgObj.sourceUserId
     if (userId == "0") {
         userId = "系统"
     } else if (userId == getUserId()) {
         userId = "我"
     }
-    showArea.value = showArea.value + "<br/>" + userId + "说:" + msgObj.messageContent
+    showArea.value = showArea.value + "\n" + userId + "说:" + msgObj.body
     // 给服务器发送ack
     sendAck(msgObj)
 }
@@ -33,8 +36,10 @@ function sendWsMsg() {
 
 function doSendMsg(content) {
     var msgObj = {
+        "requestId": uuid(),
+        "messageType": "CHAT",
         "sourceUserId": getUserId(),
-        "messageContent": content
+        "body": content
     }
     var messageType = document.getElementById("messageType").value
     if (messageType == "private") {
@@ -44,16 +49,21 @@ function doSendMsg(content) {
             alert("请输入目标用户id");
             return
         }
-        msgObj.targetUserId = targetUserId
+        msgObj.targetUserId = [targetUserId]
     }
     var json = JSON.stringify(msgObj)
     ws.send(json)
 }
 
 function login(content) {
-    var obj = {
-        "sourceUserId": getUserId(),
+    var tokenObj = {
         "token": "a745a0c2-309c-4b08-8ac3-fc91d49179c3"
+    }
+    var obj = {
+        "requestId": uuid(),
+        "messageType": "LOGIN",
+        "sourceUserId": getUserId(),
+        "body": JSON.stringify(tokenObj)
     }
     var json = JSON.stringify(obj)
     ws.send(json)
@@ -62,12 +72,12 @@ function login(content) {
 }
 
 function sendAck(msg) {
-    var msgId = msg.id
-    if (!msgId) {
+    var requestId = msg.requestId
+    if (!requestId) {
         return
     }
     var obj = {
-        "id": msgId,
+        "requestId": requestId,
         "messageType": "ACK"
     }
     var json = JSON.stringify(obj)
@@ -91,4 +101,11 @@ function switchMessageType() {
         document.getElementById("userList").innerHTML = '<input type="text" id="targetUserId" placeholder="请输入目标用户id">'
     }
 }
+
+function uuid() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
+}
+
 

@@ -16,7 +16,7 @@ class AckHandler: SimpleChannelInboundHandler<IMMessage>() {
             return
         }
         // 更新消息的ack已收到
-        logger.info("收到服务器的ack ${msg.requestId}")
+        logger.debug("收到服务器的ack, 消息${msg.requestId}发送到服务器成功")
     }
 
 }

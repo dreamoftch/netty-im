@@ -40,6 +40,7 @@ class IMMessage {
             return IMMessage().apply {
                 this.sourceUserId = userId
                 this.body = content
+                this.messageType = MessageType.CHAT
             }
         }
 

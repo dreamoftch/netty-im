@@ -1,5 +1,6 @@
 package com.llb.test.im.server.handler
 
+import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.common.constant.SYSTEM_USER_ID
@@ -23,7 +24,7 @@ class LoginHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: IMMessage) {
         if (!userTokenService.checkUserToken(msg)) {
-            logger.error("用户${msg.sourceUserId}登录失败")
+            logger.error("用户${msg.sourceUserId}登录失败: ${JSON.toJSONString(msg)}")
             ctx.close()
             return
         }

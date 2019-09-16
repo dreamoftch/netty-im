@@ -52,6 +52,7 @@ class ServerHandler: SimpleChannelInboundHandler<IMMessage>() {
             }
         }
         chatMessageService.saveChatMessage(msg)
+        userChannelService.sendAckToUser(ctx.channel(), msg.requestId)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

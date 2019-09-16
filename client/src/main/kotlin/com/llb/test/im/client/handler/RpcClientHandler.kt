@@ -33,6 +33,7 @@ class RpcClientHandler(private val userId: String): SimpleChannelInboundHandler<
             this.token = TOKEN
         }
         val loginMsg = IMMessage().apply {
+            this.messageType = MessageType.LOGIN
             this.sourceUserId = this@RpcClientHandler.userId
             this.requestId = UUID.randomUUID().toString()
             this.body = JSON.toJSONString(loginMessage)
