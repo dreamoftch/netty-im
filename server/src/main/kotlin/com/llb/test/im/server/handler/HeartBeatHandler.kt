@@ -1,6 +1,5 @@
 package com.llb.test.im.server.handler
 
-import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.common.msg.MessageType

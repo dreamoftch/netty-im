@@ -1,5 +1,16 @@
 # my-netty-im
 
+### 配置postgre数据库
+
+```
+docker pull postgres:10
+
+docker run --name my-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:10
+
+The default postgres user and database are created in the entrypoint with initdb.
+```
+然后修改Environment中的数据库连接信息即可。
+
 ### 生成mybatis mapper
 
 `./gradlew server:mbGenerator`

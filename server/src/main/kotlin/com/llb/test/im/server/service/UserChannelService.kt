@@ -40,6 +40,10 @@ class UserChannelService {
         channels.writeAndFlush(IMMessage)
     }
 
+    fun sendMsgToAllUserExclude(IMMessage: IMMessage, excludeChannel: Channel) {
+        channels.filter { it != excludeChannel }.forEach { it.writeAndFlush(IMMessage) }
+    }
+
     fun sendMsgToUser(targetUserId: Long, IMMessage: IMMessage) {
         userChannelMap[targetUserId]?.forEach { it.writeAndFlush(IMMessage) }
     }
@@ -51,6 +55,18 @@ class UserChannelService {
         requestId ?: throw IllegalArgumentException("requestId can not be null")
         val ackMessage = IMMessage().apply {
             this.messageType = MessageType.ACK
+            this.requestId = requestId
+        }
+        channel.writeAndFlush(ackMessage)
+    }
+
+    /**
+     * 给指定用户发送ack消息,表示客户端发送的聊天消息成功发送到服务器
+     */
+    fun sendMsgSendAckToUser(channel: Channel, requestId: String?) {
+        requestId ?: throw IllegalArgumentException("requestId can not be null")
+        val ackMessage = IMMessage().apply {
+            this.messageType = MessageType.MSG_SEND_ACK
             this.requestId = requestId
         }
         channel.writeAndFlush(ackMessage)

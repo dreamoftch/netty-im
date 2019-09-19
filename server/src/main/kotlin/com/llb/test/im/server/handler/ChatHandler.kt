@@ -1,6 +1,5 @@
 package com.llb.test.im.server.handler
 
-import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.server.extension.toJson
@@ -47,13 +46,13 @@ class ChatHandler: SimpleChannelInboundHandler<IMMessage>() {
         logger.info("服务器收到消息:$message")
         chatMessageService.saveChatMessage(msg)
         if (msg.targetUserId.isEmpty()) {
-            userChannelService.sendMsgToAllUser(msg)
+            userChannelService.sendMsgToAllUserExclude(msg, ctx.channel())
         } else {
             msg.targetUserId.forEach {
                 userChannelService.sendMsgToUser(it, msg)
             }
         }
-        userChannelService.sendAckToUser(ctx.channel(), msg.requestId)
+        userChannelService.sendMsgSendAckToUser(ctx.channel(), msg.requestId)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.server.common.AccountOnlineStatus
-import com.llb.test.im.server.common.ChatMessageAck
+import com.llb.test.im.server.common.ChatMessageStatus
 import com.llb.test.im.server.entity.Account
 import com.llb.test.im.server.entity.Message
 import com.llb.test.im.server.entity.MessageExample
@@ -37,19 +37,19 @@ open class ChatMessageService {
         val example = MessageExample()
         example.createCriteria()
             .andTargetUserIdEqualTo(targetUserId)
-            .andAckEqualTo(ChatMessageAck.NOT_RECEIVED.code)
+            .andStatusEqualTo(ChatMessageStatus.NOT_RECEIVED.code)
         return messageMapper.selectByExample(example).map {
             it.toMessage()
         }
     }
 
     /**
-     * 更新消息的ack已收到
+     * 更新消息的status
      */
-    fun markAckReceived(msg: IMMessage) {
-        val requestId = msg.requestId ?: return
+    fun updateMsgStatus(requestId: String?, status: Int) {
+        requestId ?: return
         val message = Message().apply {
-            this.ack = ChatMessageAck.RECEIVED.code
+            this.status = status
         }
         val example = MessageExample()
         example.createCriteria().andRequestIdEqualTo(requestId)
@@ -73,5 +73,15 @@ open class ChatMessageService {
      */
     fun userIdExist(userId: Long): Boolean {
         return accountMapper.selectByPrimaryKey(userId) != null
+    }
+
+    /**
+     * 判断用户id是否存在
+     */
+    fun getByRequestId(requestId: String): Message? {
+        val example = MessageExample().apply {
+            this.createCriteria().andRequestIdEqualTo(requestId)
+        }
+        return messageMapper.selectByExample(example).firstOrNull()
     }
 }

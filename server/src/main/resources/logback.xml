@@ -8,5 +8,5 @@
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger level="debug" name="com.llb.test.im.server"/>
+    <logger level="info" name="com.llb.test.im.server"/>
 </configuration>
