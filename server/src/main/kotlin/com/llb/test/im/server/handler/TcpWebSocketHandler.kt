@@ -28,7 +28,7 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
     @Inject
     private lateinit var loginHandler: LoginHandler
     @Inject
-    private lateinit var serverHandler: ServerHandler
+    private lateinit var chatHandler: ChatHandler
     @Inject
     private lateinit var ackHandler: AckHandler
     @Inject
@@ -64,7 +64,7 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
         pipeline.addLast(loginHandler) // 需要登录
             .addLast(ackHandler)
             .addLast(heartBeatHandler)
-            .addLast(serverHandler) // 业务处理
+            .addLast(chatHandler) // 业务处理
         // 每个连接只需要第一次连接上来的时候执行TcpWebSocketHandler,后面都不需要执行,所以需要移除掉
         pipeline.remove(TcpWebSocketHandler::class.java)
     }

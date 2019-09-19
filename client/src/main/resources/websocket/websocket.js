@@ -1,9 +1,17 @@
 var ws = new WebSocket("ws://localhost:18888/ws")
 
+var imMessageType = {
+    "LOGIN": "LOGIN", // 登陆消息
+    "LOGOUT": "LOGOUT", // 登出消息
+    "ACK": "ACK", // ACK消息
+    "HEARTBEAT": "HEARTBEAT", // 心跳消息
+    "CHAT": "CHAT" // 聊天消息
+}
+
 ws.onmessage = function(e) {
     var showArea = document.getElementById("responset_msg")
     var msgObj = JSON.parse(e.data)
-    if (msgObj.messageType != 'CHAT') {
+    if (msgObj.messageType != imMessageType.CHAT) {
         return
     }
     var userId = msgObj.sourceUserId
@@ -37,7 +45,7 @@ function sendWsMsg() {
 function doSendMsg(content) {
     var msgObj = {
         "requestId": uuid(),
-        "messageType": "CHAT",
+        "messageType": imMessageType.CHAT,
         "sourceUserId": getUserId(),
         "body": content
     }
@@ -61,7 +69,7 @@ function login(content) {
     }
     var obj = {
         "requestId": uuid(),
-        "messageType": "LOGIN",
+        "messageType": imMessageType.LOGIN,
         "sourceUserId": getUserId(),
         "body": JSON.stringify(tokenObj)
     }
@@ -69,6 +77,8 @@ function login(content) {
     ws.send(json)
     var showArea = document.getElementById("responset_msg")
     showArea.value = "登陆成功，开始发消息吧"
+    // 启动后台心跳
+    sendHeartBeatBackend()
 }
 
 function sendAck(msg) {
@@ -78,7 +88,7 @@ function sendAck(msg) {
     }
     var obj = {
         "requestId": requestId,
-        "messageType": "ACK"
+        "messageType": imMessageType.ACK
     }
     var json = JSON.stringify(obj)
     ws.send(json)
@@ -102,10 +112,36 @@ function switchMessageType() {
     }
 }
 
+/**
+ * 生成uuid
+ */
 function uuid() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
 }
+
+/**
+ * 发送心跳
+ */
+function sendHeartBeat() {
+    var obj = {
+        "requestId": uuid(),
+        "messageType": imMessageType.HEARTBEAT,
+        "sourceUserId": getUserId()
+    }
+    var json = JSON.stringify(obj)
+    ws.send(json)
+    // 继续设置定时心跳
+    sendHeartBeatBackend()
+}
+
+/**
+ * 后台持续发心跳
+ */
+function sendHeartBeatBackend() {
+    setTimeout("sendHeartBeat()", 5000);
+}
+
 
 

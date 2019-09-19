@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import org.slf4j.LoggerFactory
 
-class ServerHandler: SimpleChannelInboundHandler<IMMessage>() {
+class ChatHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -44,6 +44,7 @@ class ServerHandler: SimpleChannelInboundHandler<IMMessage>() {
     override fun channelRead0(ctx: ChannelHandlerContext, msg: IMMessage) {
         val message = JSON.toJSONString(msg)
         logger.info("服务器收到消息:$message")
+        chatMessageService.saveChatMessage(msg)
         if (msg.targetUserId.isEmpty()) {
             userChannelService.sendMsgToAllUser(msg)
         } else {
@@ -51,7 +52,6 @@ class ServerHandler: SimpleChannelInboundHandler<IMMessage>() {
                 userChannelService.sendMsgToUser(it, msg)
             }
         }
-        chatMessageService.saveChatMessage(msg)
         userChannelService.sendAckToUser(ctx.channel(), msg.requestId)
     }
 

@@ -28,7 +28,7 @@ class LoginHandler: SimpleChannelInboundHandler<IMMessage>() {
             ctx.close()
             return
         }
-        logger.info("用户${msg.sourceUserId}登录成功")
+        logger.debug("用户${msg.sourceUserId}登录成功")
         processLoginSuccessUser(ctx, msg)
         ctx.pipeline().remove(LoginHandler::class.java)
     }
