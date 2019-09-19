@@ -1,8 +1,8 @@
 package com.llb.test.im.server.handler
 
-import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
-import com.llb.test.im.common.constant.Message
+import com.llb.test.im.common.msg.IMMessage
+import com.llb.test.im.server.extension.toJson
 import com.llb.test.im.server.service.ChatMessageService
 import com.llb.test.im.server.service.UserChannelService
 import io.netty.channel.Channel
@@ -10,12 +10,14 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import org.slf4j.LoggerFactory
 
-class ServerHandler: SimpleChannelInboundHandler<Message>() {
+class ChatHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Inject
     private lateinit var chatMessageService: ChatMessageService
+    @Inject
+    private lateinit var userChannelService: UserChannelService
 
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         val remoteAddress = ctx.channel().remoteAddress().toString()
@@ -39,15 +41,18 @@ class ServerHandler: SimpleChannelInboundHandler<Message>() {
         logger.info("[SERVER] - " + remoteAddress + "在线")
     }
 
-    override fun channelRead0(ctx: ChannelHandlerContext, msg: Message) {
-        val message = JSON.toJSONString(msg)
+    override fun channelRead0(ctx: ChannelHandlerContext, msg: IMMessage) {
+        val message = msg.toJson()
         logger.info("服务器收到消息:$message")
-        if (msg.targetUserId.isBlank()) {
-            UserChannelService.sendMsgToAllUser(msg)
-        } else {
-            UserChannelService.sendMsgToUser(msg.targetUserId, msg)
-        }
         chatMessageService.saveChatMessage(msg)
+        if (msg.targetUserId.isEmpty()) {
+            userChannelService.sendMsgToAllUserExclude(msg, ctx.channel())
+        } else {
+            msg.targetUserId.forEach {
+                userChannelService.sendMsgToUser(it, msg)
+            }
+        }
+        userChannelService.sendMsgSendAckToUser(ctx.channel(), msg.requestId)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
@@ -57,8 +62,8 @@ class ServerHandler: SimpleChannelInboundHandler<Message>() {
     }
 
     private fun userOffline(channel: Channel) {
-        UserChannelService.removeByChannel(channel)?.let {
-            UserChannelService.sendMsgToAllUser(Message.build("用户${it}下线"))
+        userChannelService.removeByChannel(channel)?.let {
+            userChannelService.sendMsgToAllUser(IMMessage.build("用户${it}下线"))
         }
     }
 }

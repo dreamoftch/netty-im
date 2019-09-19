@@ -1,7 +1,9 @@
+
 plugins {
     id 'java'
     id 'application'
     id 'org.jetbrains.kotlin.jvm'
+    id "com.thinkimi.gradle.MybatisGenerator" version "2.1.2"
 }
 
 group 'com.llb.test.im'
@@ -28,3 +30,31 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+configurations {
+    mybatisGenerator
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = 'server/src/main/resources/generatorConfig.xml'
+}
+
+//mbg {
+//    overwrite = true
+//    consoleable = true
+//    jdbc{
+//        driver = "org.postgresql.Driver"
+//        url    = "jdbc:postgresql://localhost:5432/postgres"
+//        username = "postgres"
+//        password = "postgres"
+//    }
+//    mapper{
+//        resourcesProject = "src/main/java"
+//        mapperPlugin = tk.mybatis.mapper.generator.MapperPlugin.class
+//        mapperPackage= "com.llb.test.im.server.mapper"
+//        modelPackage = "com.llb.test.im.server.entity"
+//        xmlPackage =   "com.llb.test.im.server.mapper"
+//        mapperSuffix ="Mapper"
+//    }
+//}

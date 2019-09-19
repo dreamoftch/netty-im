@@ -5,12 +5,16 @@ import java.util.*
 /**
  * 聊天消息对象
  */
-class ChatMessage {
+class MessagePO {
 
     /**
      * id
      */
     var id: Long? = null
+    /**
+     * 客户端生成的消息id
+     */
+    var requestId: String? = null
     /**
      * 消息来源用户id
      */
@@ -22,7 +26,7 @@ class ChatMessage {
     /**
      * 消息内容
      */
-    var messageContent: String? = null
+    var content: String? = null
     /**
      * 消息发送时间
      */

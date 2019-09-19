@@ -28,9 +28,13 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
     @Inject
     private lateinit var loginHandler: LoginHandler
     @Inject
-    private lateinit var serverHandler: ServerHandler
+    private lateinit var chatHandler: ChatHandler
     @Inject
     private lateinit var ackHandler: AckHandler
+    @Inject
+    private lateinit var heartBeatHandler: HeartBeatHandler
+    @Inject
+    private lateinit var msgReadHandler:  MsgReadHandler
 
     companion object {
         private val HTTP_METHOD_PREFIX = listOf(
@@ -61,7 +65,9 @@ class TcpWebSocketHandler: ByteToMessageDecoder() {
         // 处理消息
         pipeline.addLast(loginHandler) // 需要登录
             .addLast(ackHandler)
-            .addLast(serverHandler) // 业务处理
+            .addLast(heartBeatHandler)
+            .addLast(msgReadHandler)
+            .addLast(chatHandler) // 业务处理
         // 每个连接只需要第一次连接上来的时候执行TcpWebSocketHandler,后面都不需要执行,所以需要移除掉
         pipeline.remove(TcpWebSocketHandler::class.java)
     }
