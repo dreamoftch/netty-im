@@ -24,11 +24,11 @@ class IMMessage {
     /**
      * 消息来源用户id
      */
-    var sourceUserId: String = ""
+    var sourceUserId: Long = 0
     /**
      * 消息目标用户id
      */
-    var targetUserId: List<String> = emptyList()
+    var targetUserId: List<Long> = emptyList()
     /**
      * 消息发送时间
      */
@@ -36,7 +36,7 @@ class IMMessage {
 
     companion object {
 
-        fun build(content: String?, userId: String): IMMessage {
+        fun build(content: String?, userId: Long): IMMessage {
             return IMMessage().apply {
                 this.sourceUserId = userId
                 this.body = content

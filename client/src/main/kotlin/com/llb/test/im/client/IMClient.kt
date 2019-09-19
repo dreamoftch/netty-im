@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 private val logger = LoggerFactory.getLogger("IMClient")
 
 fun main(args: Array<String>) {
-    val userId = args.firstOrNull() ?: UUID.randomUUID().toString()
+    val userId = args.firstOrNull()?.toLongOrNull() ?: 1
     logger.info("userId is $userId")
     IMClient().start(userId)
 }
@@ -33,7 +33,7 @@ class IMClient {
 
     private var workerGroup: NioEventLoopGroup? = null
 
-    fun start(userId: String) {
+    fun start(userId: Long) {
         try {
             val reader = BufferedReader(InputStreamReader(System.`in`))
             channel = connect(userId).channel()
@@ -47,7 +47,7 @@ class IMClient {
         }
     }
 
-    private fun connect(userId: String): ChannelFuture {
+    private fun connect(userId: Long): ChannelFuture {
         workerGroup = NioEventLoopGroup()
         return Bootstrap()
             .group(workerGroup)
@@ -59,12 +59,12 @@ class IMClient {
             .sync()
     }
 
-    private fun readAndSendUserInputBackend(userId: String, reader: BufferedReader) {
+    private fun readAndSendUserInputBackend(userId: Long, reader: BufferedReader) {
         thread {
             while (true) {
-                logger.info("请输入对方的大名(直接回车表示群聊):")
-                val targetUserId = reader.readLine()
-                val targetUserIds = if (targetUserId.isNullOrBlank()) {
+                logger.info("请输入对方的id(直接回车表示群聊):")
+                val targetUserId = reader.readLine()?.toLongOrNull()
+                val targetUserIds = if (targetUserId == null) {
                     emptyList()
                 } else {
                     listOf(targetUserId)
@@ -83,7 +83,7 @@ class IMClient {
         }
     }
 
-    private fun doHeartBeatBackend(userId: String) {
+    private fun doHeartBeatBackend(userId: Long) {
         thread {
             while (true) {
                 val msg = IMMessage().apply {
@@ -98,7 +98,7 @@ class IMClient {
         }
     }
 
-    private fun getChannel(userId: String): Channel {
+    private fun getChannel(userId: Long): Channel {
         val currentChannel = channel
         if (currentChannel == null || !channelAvailable(currentChannel)) {
             return connect(userId).channel()

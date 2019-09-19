@@ -6,3 +6,10 @@ enum class ChatMessageAck(val code: Int, val desc: String) {
     RECEIVED(2, "收到"),
 
 }
+
+enum class AccountOnlineStatus(val code: Int, val desc: String) {
+
+    NOT_ONLINE(1, "不在线"),
+    ONLINE(2, "在线"),
+
+}

@@ -12,6 +12,7 @@ ws.onmessage = function(e) {
     var showArea = document.getElementById("responset_msg")
     var msgObj = JSON.parse(e.data)
     if (msgObj.messageType != imMessageType.CHAT) {
+        console.log('收到非聊天消息:' + e.data)
         return
     }
     var userId = msgObj.sourceUserId

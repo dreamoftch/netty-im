@@ -1,6 +1,7 @@
 package com.llb.test.im.server.service
 
 import com.alibaba.fastjson.JSON
+import com.google.inject.Inject
 import com.google.inject.Singleton
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.common.msg.MessageType
@@ -13,9 +14,12 @@ class UserTokenService {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    @Inject
+    private lateinit var chatMessageService: ChatMessageService
+
     fun checkUserToken(msg: IMMessage): Boolean {
         val body = msg.body ?: return false
-        if (msg.messageType != MessageType.LOGIN || msg.sourceUserId.isBlank()) {
+        if (msg.messageType != MessageType.LOGIN ||  !chatMessageService.userIdExist(msg.sourceUserId)) {
             return false
         }
         return try {

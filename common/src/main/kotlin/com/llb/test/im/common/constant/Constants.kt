@@ -11,7 +11,7 @@ const val IM_MESSAGE_VERSION = 1
 /**
  * 系统消息用户id
  */
-const val SYSTEM_USER_ID = "0"
+const val SYSTEM_USER_ID = 0L
 /**
  * 测试使用的用户登陆token
  */

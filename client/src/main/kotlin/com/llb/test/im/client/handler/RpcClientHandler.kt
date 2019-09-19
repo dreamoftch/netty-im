@@ -12,7 +12,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class RpcClientHandler(private val userId: String): SimpleChannelInboundHandler<IMMessage>() {
+class RpcClientHandler(private val userId: Long): SimpleChannelInboundHandler<IMMessage>() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -58,7 +58,7 @@ class RpcClientHandler(private val userId: String): SimpleChannelInboundHandler<
         return if (msg.sourceUserId == SYSTEM_USER_ID) {
             "系统"
         } else {
-            msg.sourceUserId
+            msg.sourceUserId.toString()
         }
     }
 }

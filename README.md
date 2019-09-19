@@ -1,5 +1,9 @@
 # my-netty-im
 
+### 生成mybatis mapper
+
+`./gradlew server:mbGenerator`
+
 ### 启动server
 
 `./gradlew server:run`

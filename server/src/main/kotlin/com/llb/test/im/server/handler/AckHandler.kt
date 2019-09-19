@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
 import com.llb.test.im.common.msg.MessageType
 import com.llb.test.im.common.msg.IMMessage
+import com.llb.test.im.server.extension.toJson
 import com.llb.test.im.server.service.ChatMessageService
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -24,7 +25,7 @@ class AckHandler: SimpleChannelInboundHandler<IMMessage>() {
             ctx.fireChannelRead(msg)
             return
         }
-        logger.debug("收到ack ${JSON.toJSONString(msg)}")
+        logger.debug("收到ack ${msg.toJson()}")
         // 更新消息的ack已收到
         chatMessageService.markAckReceived(msg)
     }

@@ -1,15 +1,16 @@
 package com.llb.test.im.server.handler
 
-import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
-import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.common.constant.SYSTEM_USER_ID
+import com.llb.test.im.common.msg.IMMessage
+import com.llb.test.im.server.extension.toJson
 import com.llb.test.im.server.service.ChatMessageService
 import com.llb.test.im.server.service.UserChannelService
 import com.llb.test.im.server.service.UserTokenService
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import org.slf4j.LoggerFactory
+import java.util.*
 
 class LoginHandler: SimpleChannelInboundHandler<IMMessage>() {
 
@@ -24,7 +25,7 @@ class LoginHandler: SimpleChannelInboundHandler<IMMessage>() {
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: IMMessage) {
         if (!userTokenService.checkUserToken(msg)) {
-            logger.error("用户${msg.sourceUserId}登录失败: ${JSON.toJSONString(msg)}")
+            logger.error("用户${msg.sourceUserId}登录失败: ${msg.toJson()}")
             ctx.close()
             return
         }
@@ -45,6 +46,8 @@ class LoginHandler: SimpleChannelInboundHandler<IMMessage>() {
         chatMessageService.listMyMessageWithNoAck(msg.sourceUserId).forEach {
             userChannelService.sendMsgToUser(msg.sourceUserId, it)
         }
+        // 记录登陆时间
+        chatMessageService.updateAccountLogin(msg.sourceUserId, Date())
     }
 
 }

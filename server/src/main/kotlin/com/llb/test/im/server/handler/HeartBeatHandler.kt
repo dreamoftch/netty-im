@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON
 import com.google.inject.Inject
 import com.llb.test.im.common.msg.IMMessage
 import com.llb.test.im.common.msg.MessageType
+import com.llb.test.im.server.extension.toJson
 import com.llb.test.im.server.service.UserChannelService
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -24,7 +25,7 @@ class HeartBeatHandler: SimpleChannelInboundHandler<IMMessage>() {
             return
         }
         val requestId = msg.requestId ?: return
-        logger.debug("收到heartBeat ${JSON.toJSONString(msg)}")
+        logger.debug("收到heartBeat ${msg.toJson()}")
         // 告诉客户端ack已收到
         userChannelService.sendAckToUser(ctx.channel(), requestId)
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="postgre" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="org.postgresql.Driver"
+                        connectionURL="jdbc:postgresql://localhost:5432/postgres"
+                        userId="postgres"
+                        password="postgres">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="true"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.llb.test.im.server.entity" targetProject="server/src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.llb.test.im.server.mapper.generate" targetProject="server/src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.llb.test.im.server.mapper.generate" targetProject="server/src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="account" domainObjectName="Account">
+        </table>
+        <table tableName="message" domainObjectName="Message">
+        </table>
+    </context>
+</generatorConfiguration>

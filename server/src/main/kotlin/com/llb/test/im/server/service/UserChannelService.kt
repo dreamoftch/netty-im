@@ -18,19 +18,19 @@ class UserChannelService {
     /**
      * key: 用户id, value: 该用户的连接列表(可以多端登陆)
      */
-    private val userChannelMap = ConcurrentHashMap<String, MutableSet<Channel>>()
+    private val userChannelMap = ConcurrentHashMap<Long, MutableSet<Channel>>()
     /**
      * key: 用户连接, value: 该连接对应的用户id
      */
-    private val channelUserMap = ConcurrentHashMap<Channel, String>()
+    private val channelUserMap = ConcurrentHashMap<Channel, Long>()
 
-    fun addChannel(userId: String, channel: Channel) {
+    fun addChannel(userId: Long, channel: Channel) {
         channels.add(channel)
         getUserChannels(userId).add(channel)
         channelUserMap[channel] = userId
     }
 
-    private fun getUserChannels(userId: String): MutableSet<Channel> {
+    private fun getUserChannels(userId: Long): MutableSet<Channel> {
         val userChannels = userChannelMap[userId] ?: mutableSetOf()
         userChannelMap.putIfAbsent(userId, userChannels)
         return userChannels
@@ -40,7 +40,7 @@ class UserChannelService {
         channels.writeAndFlush(IMMessage)
     }
 
-    fun sendMsgToUser(targetUserId: String, IMMessage: IMMessage) {
+    fun sendMsgToUser(targetUserId: Long, IMMessage: IMMessage) {
         userChannelMap[targetUserId]?.forEach { it.writeAndFlush(IMMessage) }
     }
 
@@ -56,7 +56,7 @@ class UserChannelService {
         channel.writeAndFlush(ackMessage)
     }
 
-    fun removeByChannel(channel: Channel): String? {
+    fun removeByChannel(channel: Channel): Long? {
         channelUserMap[channel]?.let { userId ->
             channelUserMap.remove(channel)
             userChannelMap.remove(userId)
